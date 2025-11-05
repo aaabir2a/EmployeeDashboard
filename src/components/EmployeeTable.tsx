@@ -170,11 +170,14 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
       onPaginationChange(paginationConfig.current, paginationConfig.pageSize);
     }
 
-    // Handle sorting
-    if (sorter.field) {
-      onSortChange(sorter.field, sorter.order || null);
-    } else {
-      onSortChange("", null);
+    // Handle sorting - Fixed to work with single sorter
+    if (sorter && !Array.isArray(sorter)) {
+      if (sorter.field && sorter.order) {
+        onSortChange(sorter.field as string, sorter.order);
+      } else {
+        // Clear sorting when user clicks to remove sort
+        onSortChange("", null);
+      }
     }
   };
 

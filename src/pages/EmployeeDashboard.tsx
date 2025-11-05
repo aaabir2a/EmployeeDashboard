@@ -81,13 +81,16 @@ const EmployeeDashboard: React.FC = () => {
   }, [filteredAndSortedEmployees, pagination])
 
   // Update pagination total when filtered data changes
-  useEffect(() => {
-    setPagination((prev) => ({
-      ...prev,
-      total: filteredAndSortedEmployees.length,
-      current: 1, // Reset to first page when filters change
-    }))
-  }, [filteredAndSortedEmployees.length, setPagination])
+useEffect(() => {
+  setPagination((prev) => ({
+    ...prev,
+    total: filteredAndSortedEmployees.length,
+    // Only reset page if we're beyond available pages
+    current: prev.current > Math.ceil(filteredAndSortedEmployees.length / prev.pageSize) 
+      ? 1 
+      : prev.current,
+  }));
+}, [filteredAndSortedEmployees.length, setPagination]);
 
   // Handlers
   const handleFilterChange = (newFilters: Partial<FilterState>) => {

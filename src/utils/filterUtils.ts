@@ -54,18 +54,21 @@ export const filterEmployees = (
 };
 
 /**
- * Sort employees based on sort state
+ * Sort employees based on field and order
+ * @param employees - Array of employees to sort
+ * @param field - Field name to sort by
+ * @param order - Sort order ('ascend' | 'descend' | null)
  */
 export const sortEmployees = (
   employees: Employee[],
-  sortState: SortState
+  field: string,
+  order: "ascend" | "descend" | null
 ): Employee[] => {
-  if (!sortState.field || !sortState.order) {
+  if (!field || !order) {
     return employees;
   }
 
   const sorted = [...employees];
-  const { field, order } = sortState;
   const isAscending = order === "ascend";
 
   sorted.sort((a, b) => {
