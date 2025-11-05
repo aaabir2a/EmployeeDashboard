@@ -1,98 +1,152 @@
-"use client"
+// hooks/useEmployees.ts
+import { useState, useEffect, useCallback } from "react";
+import { message } from "antd";
+import type { Employee, EmployeeFormData } from "../types/employee.types";
+import * as employeeApi from "../services/employeeApi";
 
-import { useState, useCallback, useEffect } from "react"
-import type { Employee, EmployeeFormData } from "../types/employee.types"
-import * as employeeApi from "../services/employeeApi"
+interface UseEmployeesReturn {
+  employees: Employee[];
+  loading: boolean;
+  error: string | null;
+  createEmployee: (data: EmployeeFormData) => Promise<boolean>;
+  updateEmployee: (id: string, data: EmployeeFormData) => Promise<boolean>;
+  archiveEmployee: (id: string) => Promise<void>;
+  restoreEmployee: (id: string) => Promise<void>;
+  refreshEmployees: () => Promise<void>;
+}
 
-export const useEmployees = () => {
-  const [employees, setEmployees] = useState<Employee[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export const useEmployees = (): UseEmployeesReturn => {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load employees on mount
-  useEffect(() => {
-    loadEmployees()
-  }, [])
+  // Fetch all employees
+  const fetchEmployees = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-  const loadEmployees = useCallback(async () => {
-    setLoading(true)
-    setError(null)
     try {
-      const data = await employeeApi.fetchEmployees()
-      setEmployees(data)
+      const data = await employeeApi.fetchEmployees();
+      setEmployees(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load employees")
+      const errorMessage = err instanceof Error ? err.message : "Failed to fetch employees";
+      setError(errorMessage);
+      message.error(errorMessage);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [])
+  }, []);
 
-  const createEmployee = useCallback(async (data: EmployeeFormData) => {
-    try {
-      const newEmployee = await employeeApi.createEmployee(data)
-      setEmployees((prev) => [...prev, newEmployee])
-      return newEmployee
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to create employee"
-      setError(message)
-      throw err
-    }
-  }, [])
+  // Initial fetch
+  useEffect(() => {
+    fetchEmployees();
+  }, [fetchEmployees]);
 
-  const updateEmployee = useCallback(async (id: string, data: EmployeeFormData) => {
-    try {
-      const updated = await employeeApi.updateEmployee(id, data)
-      setEmployees((prev) => prev.map((emp) => (emp.id === id ? updated : emp)))
-      return updated
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to update employee"
-      setError(message)
-      throw err
-    }
-  }, [])
+  // Create employee
+  const createEmployee = useCallback(
+    async (data: EmployeeFormData): Promise<boolean> => {
+      setLoading(true);
+      setError(null);
 
-  const archiveEmployee = useCallback(async (id: string) => {
-    try {
-      await employeeApi.archiveEmployee(id)
-      setEmployees((prev) => prev.map((emp) => (emp.id === id ? { ...emp, isArchived: true } : emp)))
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to archive employee"
-      setError(message)
-      throw err
-    }
-  }, [])
+      try {
+        const newEmployee = await employeeApi.createEmployee(data);
+        setEmployees((prev) => [...prev, newEmployee]);
+        message.success(`Employee "${data.name}" added successfully!`);
+        return true;
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to create employee";
+        setError(errorMessage);
+        message.error(errorMessage);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
-  const restoreEmployee = useCallback(async (id: string) => {
-    try {
-      await employeeApi.restoreEmployee(id)
-      setEmployees((prev) => prev.map((emp) => (emp.id === id ? { ...emp, isArchived: false } : emp)))
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to restore employee"
-      setError(message)
-      throw err
-    }
-  }, [])
+  // Update employee
+  const updateEmployee = useCallback(
+    async (id: string, data: EmployeeFormData): Promise<boolean> => {
+      setLoading(true);
+      setError(null);
 
-  const deleteEmployee = useCallback(async (id: string) => {
+      try {
+        const updatedEmployee = await employeeApi.updateEmployee(id, data);
+        setEmployees((prev) =>
+          prev.map((emp) => (emp.id === id ? updatedEmployee : emp))
+        );
+        message.success(`Employee "${data.name}" updated successfully!`);
+        return true;
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to update employee";
+        setError(errorMessage);
+        message.error(errorMessage);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
+  // Archive employee (soft delete)
+  const archiveEmployee = useCallback(async (id: string): Promise<void> => {
+    setLoading(true);
+    setError(null);
+
     try {
-      await employeeApi.deleteEmployee(id)
-      setEmployees((prev) => prev.filter((emp) => emp.id !== id))
+      await employeeApi.archiveEmployee(id);
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp.id === id ? { ...emp, isArchived: true } : emp
+        )
+      );
+      message.success("Employee archived successfully!");
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to delete employee"
-      setError(message)
-      throw err
+      const errorMessage = err instanceof Error ? err.message : "Failed to archive employee";
+      setError(errorMessage);
+      message.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
-  }, [])
+  }, []);
+
+  // Restore archived employee
+  const restoreEmployee = useCallback(async (id: string): Promise<void> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await employeeApi.restoreEmployee(id);
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp.id === id ? { ...emp, isArchived: false } : emp
+        )
+      );
+      message.success("Employee restored successfully!");
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to restore employee";
+      setError(errorMessage);
+      message.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Refresh employees (manual reload)
+  const refreshEmployees = useCallback(async () => {
+    await fetchEmployees();
+  }, [fetchEmployees]);
 
   return {
     employees,
     loading,
     error,
-    loadEmployees,
     createEmployee,
     updateEmployee,
     archiveEmployee,
     restoreEmployee,
-    deleteEmployee,
-  }
-}
+    refreshEmployees,
+  };
+};

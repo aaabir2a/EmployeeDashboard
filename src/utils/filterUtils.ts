@@ -1,84 +1,94 @@
-import type { Employee, FilterState } from "../types/employee.types"
+// utils/filterUtils.ts
+import type { Employee, FilterState, SortState } from "../types/employee.types";
 
-export const filterEmployees = (employees: Employee[], filters: FilterState): Employee[] => {
+/**
+ * Filter employees based on filter state
+ */
+export const filterEmployees = (
+  employees: Employee[],
+  filters: FilterState
+): Employee[] => {
   return employees.filter((employee) => {
-    // Search filter
+    // Filter by archived status
+    if (filters.showArchived !== undefined) {
+      if (!filters.showArchived && employee.isArchived) return false;
+      if (filters.showArchived && !employee.isArchived) return false;
+    }
+
+    // Filter by search (name, department, role, status)
     if (filters.search) {
-      const searchLower = filters.search.toLowerCase()
+      const searchLower = filters.search.toLowerCase();
       const matchesSearch =
         employee.name.toLowerCase().includes(searchLower) ||
-        employee.email?.toLowerCase().includes(searchLower) ||
+        employee.department.toLowerCase().includes(searchLower) ||
         employee.role.toLowerCase().includes(searchLower) ||
-        employee.department.toLowerCase().includes(searchLower)
+        employee.status.toLowerCase().includes(searchLower);
 
-      if (!matchesSearch) return false
+      if (!matchesSearch) return false;
     }
 
-    // Department filter
-    if (filters.department) {
-      if (employee.department !== filters.department) return false
+    // Filter by department
+    if (filters.department && employee.department !== filters.department) {
+      return false;
     }
 
-    // Status filter
-    if (filters.status) {
-      if (employee.status !== filters.status) return false
+    // Filter by status
+    if (filters.status && employee.status !== filters.status) {
+      return false;
     }
 
-    // Date range filter
-    if (filters.dateRange) {
-      const [startDate, endDate] = filters.dateRange
-      const empDate = new Date(employee.joiningDate)
-      const start = new Date(startDate)
-      const end = new Date(endDate)
+    // Filter by date range
+    if (filters.dateRange && filters.dateRange.length === 2) {
+      const [startDate, endDate] = filters.dateRange;
+      const joiningDate = new Date(employee.joiningDate);
+      const start = new Date(startDate);
+      const end = new Date(endDate);
 
-      if (empDate < start || empDate > end) return false
+      if (joiningDate < start || joiningDate > end) {
+        return false;
+      }
     }
 
-    // Archive filter
-    if (!filters.showArchived && employee.isArchived) {
-      return false
-    }
+    return true;
+  });
+};
 
-    return true
-  })
-}
-
+/**
+ * Sort employees based on sort state
+ */
 export const sortEmployees = (
   employees: Employee[],
-  sortField: string,
-  sortOrder: "ascend" | "descend" | null,
+  sortState: SortState
 ): Employee[] => {
-  if (!sortOrder) return employees
+  if (!sortState.field || !sortState.order) {
+    return employees;
+  }
 
-  const sorted = [...employees].sort((a, b) => {
-    let aValue: any = a[sortField as keyof Employee]
-    let bValue: any = b[sortField as keyof Employee]
+  const sorted = [...employees];
+  const { field, order } = sortState;
+  const isAscending = order === "ascend";
 
-    // Handle different data types
-    if (typeof aValue === "string") {
-      aValue = aValue.toLowerCase()
-      bValue = (bValue as string).toLowerCase()
+  sorted.sort((a, b) => {
+    let aValue: any = a[field as keyof Employee];
+    let bValue: any = b[field as keyof Employee];
+
+    // Handle date fields
+    if (field === "joiningDate" || field === "createdAt" || field === "updatedAt") {
+      aValue = new Date(aValue).getTime();
+      bValue = new Date(bValue).getTime();
     }
 
-    if (aValue < bValue) return sortOrder === "ascend" ? -1 : 1
-    if (aValue > bValue) return sortOrder === "ascend" ? 1 : -1
-    return 0
-  })
+    // Handle string fields
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
+    }
 
-  return sorted
-}
+    // Compare values
+    if (aValue < bValue) return isAscending ? -1 : 1;
+    if (aValue > bValue) return isAscending ? 1 : -1;
+    return 0;
+  });
 
-export const getUniqueValues = (employees: Employee[], field: keyof Employee): string[] => {
-  const values = employees.map((emp) => String(emp[field]))
-  return [...new Set(values)].sort()
-}
-
-export const getFilteredAndSortedEmployees = (
-  employees: Employee[],
-  filters: FilterState,
-  sortField: string,
-  sortOrder: "ascend" | "descend" | null,
-): Employee[] => {
-  const filtered = filterEmployees(employees, filters)
-  return sortEmployees(filtered, sortField, sortOrder)
-}
+  return sorted;
+};
