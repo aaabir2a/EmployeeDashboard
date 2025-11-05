@@ -1,20 +1,30 @@
-// pages/EmployeeDashboard.tsx
-import React, { useState, useMemo, useEffect } from "react";
-import { Layout, Spin, Alert } from "antd";
-import EmployeeHeader from "../components/EmployeeHeader";
-import EmployeeFilters from "../components/EmployeeFilters";
-import EmployeeTable from "../components/EmployeeTable";
-import EmployeeCardView from "../components/EmployeeCardView";
-import EmployeeDrawer from "../components/EmployeeDrawer";
-import EmptyState from "../components/EmptyState";
-import { useEmployees } from "../hooks/useEmployees";
-import { useDebounce } from "../hooks/useDebounce";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import type { Employee, EmployeeFormData, FilterState, PaginationState, SortState, ViewMode } from "../types/employee.types";
-import { filterEmployees, sortEmployees } from "../utils/filterUtils";
-import { DEFAULT_PAGE_SIZE, STORAGE_KEYS } from "../utils/constants";
+"use client"
 
-const { Content } = Layout;
+// pages/EmployeeDashboard.tsx
+import type React from "react"
+import { useState, useMemo, useEffect } from "react"
+import { Layout, Spin, Alert } from "antd"
+import EmployeeHeader from "../components/EmployeeHeader"
+import EmployeeFilters from "../components/EmployeeFilters"
+import EmployeeTable from "../components/EmployeeTable"
+import EmployeeCardView from "../components/EmployeeCardView"
+import EmployeeDrawer from "../components/EmployeeDrawer"
+import EmptyState from "../components/EmptyState"
+import { useEmployees } from "../hooks/useEmployees"
+import { useDebounce } from "../hooks/useDebounce"
+import { useLocalStorage } from "../hooks/useLocalStorage"
+import type {
+  Employee,
+  EmployeeFormData,
+  FilterState,
+  PaginationState,
+  SortState,
+  ViewMode,
+} from "../types/employee.types"
+import { filterEmployees, sortEmployees } from "../utils/filterUtils"
+import { DEFAULT_PAGE_SIZE, STORAGE_KEYS } from "../utils/constants"
+
+const { Content } = Layout
 
 const EmployeeDashboard: React.FC = () => {
   // Core data
@@ -26,15 +36,12 @@ const EmployeeDashboard: React.FC = () => {
     updateEmployee,
     archiveEmployee,
     restoreEmployee,
-  } = useEmployees();
+  } = useEmployees()
 
   // UI State
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
-  const [viewMode, setViewMode] = useLocalStorage<ViewMode>(
-    STORAGE_KEYS.VIEW_MODE,
-    "table"
-  );
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
+  const [viewMode, setViewMode] = useLocalStorage<ViewMode>(STORAGE_KEYS.VIEW_MODE, "table")
 
   // Filter State
   const [filters, setFilters] = useState<FilterState>({
@@ -43,41 +50,35 @@ const EmployeeDashboard: React.FC = () => {
     status: null,
     dateRange: null,
     showArchived: false,
-  });
+  })
 
   // Debounced search for performance
-  const debouncedSearch = useDebounce(filters.search, 500);
+  const debouncedSearch = useDebounce(filters.search, 500)
 
   // Sort State (persisted)
-  const [sortState, setSortState] = useLocalStorage<SortState>(
-    STORAGE_KEYS.SORT,
-    { field: "", order: null }
-  );
+  const [sortState, setSortState] = useLocalStorage<SortState>(STORAGE_KEYS.SORT, { field: "", order: null })
 
   // Pagination State (persisted)
-  const [pagination, setPagination] = useLocalStorage<PaginationState>(
-    STORAGE_KEYS.PAGINATION,
-    {
-      current: 1,
-      pageSize: DEFAULT_PAGE_SIZE,
-      total: 0,
-    }
-  );
+  const [pagination, setPagination] = useLocalStorage<PaginationState>(STORAGE_KEYS.PAGINATION, {
+    current: 1,
+    pageSize: DEFAULT_PAGE_SIZE,
+    total: 0,
+  })
 
   // Apply filters and sorting
   const filteredAndSortedEmployees = useMemo(() => {
-    const debouncedFilters = { ...filters, search: debouncedSearch };
-    const filtered = filterEmployees(allEmployees, debouncedFilters);
-    const sorted = sortEmployees(filtered, sortState);
-    return sorted;
-  }, [allEmployees, debouncedSearch, filters, sortState]);
+    const debouncedFilters = { ...filters, search: debouncedSearch }
+    const filtered = filterEmployees(allEmployees, debouncedFilters)
+    const sorted = sortEmployees(filtered, sortState.field, sortState.order)
+    return sorted
+  }, [allEmployees, debouncedSearch, filters, sortState])
 
   // Paginated employees for current view
   const paginatedEmployees = useMemo(() => {
-    const startIndex = (pagination.current - 1) * pagination.pageSize;
-    const endIndex = startIndex + pagination.pageSize;
-    return filteredAndSortedEmployees.slice(startIndex, endIndex);
-  }, [filteredAndSortedEmployees, pagination]);
+    const startIndex = (pagination.current - 1) * pagination.pageSize
+    const endIndex = startIndex + pagination.pageSize
+    return filteredAndSortedEmployees.slice(startIndex, endIndex)
+  }, [filteredAndSortedEmployees, pagination])
 
   // Update pagination total when filtered data changes
   useEffect(() => {
@@ -85,13 +86,13 @@ const EmployeeDashboard: React.FC = () => {
       ...prev,
       total: filteredAndSortedEmployees.length,
       current: 1, // Reset to first page when filters change
-    }));
-  }, [filteredAndSortedEmployees.length, setPagination]);
+    }))
+  }, [filteredAndSortedEmployees.length, setPagination])
 
   // Handlers
   const handleFilterChange = (newFilters: Partial<FilterState>) => {
-    setFilters((prev) => ({ ...prev, ...newFilters }));
-  };
+    setFilters((prev) => ({ ...prev, ...newFilters }))
+  }
 
   const handleResetFilters = () => {
     setFilters({
@@ -100,62 +101,55 @@ const EmployeeDashboard: React.FC = () => {
       status: null,
       dateRange: null,
       showArchived: filters.showArchived, // Preserve archived toggle
-    });
-  };
+    })
+  }
 
   const handleToggleArchived = (checked: boolean) => {
-    setFilters((prev) => ({ ...prev, showArchived: checked }));
-  };
+    setFilters((prev) => ({ ...prev, showArchived: checked }))
+  }
 
-  const handleSortChange = (
-    field: string,
-    order: "ascend" | "descend" | null
-  ) => {
-    setSortState({ field, order });
-  };
+  const handleSortChange = (field: string, order: "ascend" | "descend" | null) => {
+    setSortState({ field, order })
+  }
 
   const handlePaginationChange = (page: number, pageSize: number) => {
-    setPagination({ ...pagination, current: page, pageSize });
-  };
+    setPagination({ ...pagination, current: page, pageSize })
+  }
 
   const handleAddClick = () => {
-    setSelectedEmployee(null);
-    setDrawerOpen(true);
-  };
+    setSelectedEmployee(null)
+    setDrawerOpen(true)
+  }
 
   const handleEditClick = (employee: Employee) => {
-    setSelectedEmployee(employee);
-    setDrawerOpen(true);
-  };
+    setSelectedEmployee(employee)
+    setDrawerOpen(true)
+  }
 
   const handleDrawerClose = () => {
-    setDrawerOpen(false);
-    setSelectedEmployee(null);
-  };
+    setDrawerOpen(false)
+    setSelectedEmployee(null)
+  }
 
   const handleSubmit = async (data: EmployeeFormData): Promise<boolean> => {
     if (selectedEmployee) {
-      return await updateEmployee(selectedEmployee.id, data);
+      return await updateEmployee(selectedEmployee.id, data)
     } else {
-      return await createEmployee(data);
+      return await createEmployee(data)
     }
-  };
+  }
 
   const handleArchive = async (id: string) => {
-    await archiveEmployee(id);
-  };
+    await archiveEmployee(id)
+  }
 
   const handleRestore = async (id: string) => {
-    await restoreEmployee(id);
-  };
+    await restoreEmployee(id)
+  }
 
   // Determine what to show
-  const showEmptyState =
-    !apiLoading && allEmployees.length === 0 && !filters.showArchived;
-  const showNoResults =
-    !apiLoading &&
-    allEmployees.length > 0 &&
-    filteredAndSortedEmployees.length === 0;
+  const showEmptyState = !apiLoading && allEmployees.length === 0 && !filters.showArchived
+  const showNoResults = !apiLoading && allEmployees.length > 0 && filteredAndSortedEmployees.length === 0
 
   return (
     <Layout
@@ -188,24 +182,13 @@ const EmployeeDashboard: React.FC = () => {
         {/* Main Content */}
         <Content style={{ marginTop: 24 }}>
           {error && (
-            <Alert
-              message="Error"
-              description={error}
-              type="error"
-              showIcon
-              closable
-              style={{ marginBottom: 16 }}
-            />
+            <Alert message="Error" description={error} type="error" showIcon closable style={{ marginBottom: 16 }} />
           )}
 
           {/* Filters */}
           {!showEmptyState && (
             <div style={{ marginBottom: 24 }}>
-              <EmployeeFilters
-                filters={filters}
-                onFilterChange={handleFilterChange}
-                onReset={handleResetFilters}
-              />
+              <EmployeeFilters filters={filters} onFilterChange={handleFilterChange} onReset={handleResetFilters} />
             </div>
           )}
 
@@ -272,7 +255,7 @@ const EmployeeDashboard: React.FC = () => {
         loading={apiLoading}
       />
     </Layout>
-  );
-};
+  )
+}
 
-export default EmployeeDashboard;
+export default EmployeeDashboard
