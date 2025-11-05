@@ -1,0 +1,148 @@
+{
+  "employees": [
+    {
+      "id": "1",
+      "name": "Alice Johnson",
+      "department": "Engineering",
+      "role": "Senior Frontend Developer",
+      "joiningDate": "2023-03-10",
+      "status": "Active",
+      "performanceScore": 92,
+      "isArchived": false,
+      "createdAt": "2023-03-10T08:00:00Z",
+      "updatedAt": "2023-03-10T08:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Bob Lee",
+      "department": "HR",
+      "role": "Recruiter",
+      "joiningDate": "2022-10-22",
+      "status": "On Leave",
+      "performanceScore": 78,
+      "isArchived": false,
+      "createdAt": "2022-10-22T08:00:00Z",
+      "updatedAt": "2022-10-22T08:00:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Charlie Davis",
+      "department": "Finance",
+      "role": "Financial Analyst",
+      "joiningDate": "2021-05-15",
+      "status": "Active",
+      "performanceScore": 88,
+      "isArchived": false,
+      "createdAt": "2021-05-15T08:00:00Z",
+      "updatedAt": "2021-05-15T08:00:00Z"
+    },
+    {
+      "id": "4",
+      "name": "Diana Martinez",
+      "department": "Engineering",
+      "role": "Backend Developer",
+      "joiningDate": "2023-08-01",
+      "status": "Active",
+      "performanceScore": 95,
+      "isArchived": false,
+      "createdAt": "2023-08-01T08:00:00Z",
+      "updatedAt": "2023-08-01T08:00:00Z"
+    },
+    {
+      "id": "5",
+      "name": "Ethan Brown",
+      "department": "Marketing",
+      "role": "Marketing Manager",
+      "joiningDate": "2020-02-10",
+      "status": "Resigned",
+      "performanceScore": 65,
+      "isArchived": true,
+      "createdAt": "2020-02-10T08:00:00Z",
+      "updatedAt": "2024-11-01T08:00:00Z"
+    },
+    {
+      "id": "6",
+      "name": "Fiona Chen",
+      "department": "HR",
+      "role": "HR Manager",
+      "joiningDate": "2019-11-20",
+      "status": "Active",
+      "performanceScore": 90,
+      "isArchived": false,
+      "createdAt": "2019-11-20T08:00:00Z",
+      "updatedAt": "2019-11-20T08:00:00Z"
+    },
+    {
+      "id": "7",
+      "name": "George Wilson",
+      "department": "Engineering",
+      "role": "DevOps Engineer",
+      "joiningDate": "2022-07-14",
+      "status": "Active",
+      "performanceScore": 85,
+      "isArchived": false,
+      "createdAt": "2022-07-14T08:00:00Z",
+      "updatedAt": "2022-07-14T08:00:00Z"
+    },
+    {
+      "id": "8",
+      "name": "Hannah Taylor",
+      "department": "Finance",
+      "role": "Accountant",
+      "joiningDate": "2023-01-09",
+      "status": "On Leave",
+      "performanceScore": 72,
+      "isArchived": false,
+      "createdAt": "2023-01-09T08:00:00Z",
+      "updatedAt": "2023-01-09T08:00:00Z"
+    },
+    {
+      "id": "9",
+      "name": "Ian Cooper",
+      "department": "Sales",
+      "role": "Sales Executive",
+      "joiningDate": "2021-12-05",
+      "status": "Active",
+      "performanceScore": 82,
+      "isArchived": false,
+      "createdAt": "2021-12-05T08:00:00Z",
+      "updatedAt": "2021-12-05T08:00:00Z"
+    },
+    {
+      "id": "10",
+      "name": "Julia Roberts",
+      "department": "Operations",
+      "role": "Operations Manager",
+      "joiningDate": "2020-09-18",
+      "status": "Active",
+      "performanceScore": 91,
+      "isArchived": false,
+      "createdAt": "2020-09-18T08:00:00Z",
+      "updatedAt": "2020-09-18T08:00:00Z"
+    },
+    {
+      "id": "11",
+      "name": "Kevin Zhang",
+      "department": "Engineering",
+      "role": "QA Engineer",
+      "joiningDate": "2023-04-20",
+      "status": "Active",
+      "performanceScore": 79,
+      "isArchived": false,
+      "createdAt": "2023-04-20T08:00:00Z",
+      "updatedAt": "2023-04-20T08:00:00Z"
+    },
+    {
+      "id": "12",
+      "name": "Laura Mitchell",
+      "department": "Legal",
+      "role": "Legal Counsel",
+      "joiningDate": "2019-07-30",
+      "status": "Active",
+      "performanceScore": 87,
+      "isArchived": false,
+      "createdAt": "2019-07-30T08:00:00Z",
+      "updatedAt": "2019-07-30T08:00:00Z"
+    }
+  ]
+}
