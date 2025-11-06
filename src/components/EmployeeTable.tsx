@@ -165,17 +165,20 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     _filters: any,
     sorter: any
   ) => {
-    // Handle pagination
-    if (paginationConfig.current && paginationConfig.pageSize) {
-      onPaginationChange(paginationConfig.current, paginationConfig.pageSize);
+    // Handle pagination - Check if pageSize changed
+    if (paginationConfig.pageSize !== pagination.pageSize) {
+      // Page size changed - reset to page 1
+      onPaginationChange(1, paginationConfig.pageSize!);
+    } else if (paginationConfig.current !== pagination.current) {
+      // Page changed - keep the same page size
+      onPaginationChange(paginationConfig.current!, pagination.pageSize);
     }
 
-    // Handle sorting - Fixed to work with single sorter
+    // Handle sorting
     if (sorter && !Array.isArray(sorter)) {
       if (sorter.field && sorter.order) {
         onSortChange(sorter.field as string, sorter.order);
       } else {
-        // Clear sorting when user clicks to remove sort
         onSortChange("", null);
       }
     }
@@ -192,6 +195,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
         pageSize: pagination.pageSize,
         total: pagination.total,
         showSizeChanger: true,
+        showQuickJumper: false, // REMOVED: No "Go to Page"
         showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} employees`,
         pageSizeOptions: PAGE_SIZE_OPTIONS,
       }}

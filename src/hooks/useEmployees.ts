@@ -51,12 +51,24 @@ export const useEmployees = (): UseEmployeesReturn => {
       try {
         const newEmployee = await employeeApi.createEmployee(data);
         setEmployees((prev) => [...prev, newEmployee]);
-        message.success(`Employee "${data.name}" added successfully!`);
+        
+        // Show success message
+        message.success({
+          content: `Employee "${data.name}" added successfully!`,
+          duration: 3,
+        });
+        
         return true;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to create employee";
         setError(errorMessage);
-        message.error(errorMessage);
+        
+        // Show error message
+        message.error({
+          content: errorMessage,
+          duration: 4,
+        });
+        
         return false;
       } finally {
         setLoading(false);
@@ -76,12 +88,24 @@ export const useEmployees = (): UseEmployeesReturn => {
         setEmployees((prev) =>
           prev.map((emp) => (emp.id === id ? updatedEmployee : emp))
         );
-        message.success(`Employee "${data.name}" updated successfully!`);
+        
+        // Show success message
+        message.success({
+          content: `Employee "${data.name}" updated successfully!`,
+          duration: 3,
+        });
+        
         return true;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to update employee";
         setError(errorMessage);
-        message.error(errorMessage);
+        
+        // Show error message
+        message.error({
+          content: errorMessage,
+          duration: 4,
+        });
+        
         return false;
       } finally {
         setLoading(false);
@@ -102,11 +126,21 @@ export const useEmployees = (): UseEmployeesReturn => {
           emp.id === id ? { ...emp, isArchived: true } : emp
         )
       );
-      message.success("Employee archived successfully!");
+      
+      // Show success message
+      message.success({
+        content: "Employee archived successfully!",
+        duration: 3,
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to archive employee";
       setError(errorMessage);
-      message.error(errorMessage);
+      
+      // Show error message
+      message.error({
+        content: errorMessage,
+        duration: 4,
+      });
     } finally {
       setLoading(false);
     }
@@ -124,11 +158,21 @@ export const useEmployees = (): UseEmployeesReturn => {
           emp.id === id ? { ...emp, isArchived: false } : emp
         )
       );
-      message.success("Employee restored successfully!");
+      
+      // Show success message
+      message.success({
+        content: "Employee restored successfully!",
+        duration: 3,
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to restore employee";
       setError(errorMessage);
-      message.error(errorMessage);
+      
+      // Show error message
+      message.error({
+        content: errorMessage,
+        duration: 4,
+      });
     } finally {
       setLoading(false);
     }
