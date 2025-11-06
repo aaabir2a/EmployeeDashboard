@@ -1,8 +1,6 @@
-
-
 import './App.css'
 import EmployeeDashboard from './pages/EmployeeDashboard'
-import {  message } from 'antd';
+import { message } from 'antd';
 
 // Configure message globally
 message.config({
@@ -12,8 +10,6 @@ message.config({
 });
 
 function App() {
-
-
   return (
     <>
       <EmployeeDashboard />

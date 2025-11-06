@@ -1,6 +1,6 @@
 // hooks/useEmployees.ts
 import { useState, useEffect, useCallback } from "react";
-import { notification } from "antd"; // Changed from message to notification
+import { message } from "antd";
 import type { Employee, EmployeeFormData } from "../types/employee.types";
 import * as employeeApi from "../services/employeeApi";
 
@@ -30,11 +30,7 @@ export const useEmployees = (): UseEmployeesReturn => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to fetch employees";
       setError(errorMessage);
-      notification.error({
-        message: 'Error',
-        description: errorMessage,
-        placement: 'topRight',
-      });
+      message.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -53,22 +49,14 @@ export const useEmployees = (): UseEmployeesReturn => {
         const newEmployee = await employeeApi.createEmployee(data);
         setEmployees((prev) => [...prev, newEmployee]);
         
-        notification.success({
-          message: 'Success',
-          description: `Employee "${data.name}" added successfully!`,
-          placement: 'topRight',
-        });
+        message.success(`Employee "${data.name}" added successfully!`);
         
         return true;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to create employee";
         setError(errorMessage);
         
-        notification.error({
-          message: 'Error',
-          description: errorMessage,
-          placement: 'topRight',
-        });
+        message.error(errorMessage);
         
         return false;
       } finally {
@@ -89,22 +77,14 @@ export const useEmployees = (): UseEmployeesReturn => {
           prev.map((emp) => (emp.id === id ? updatedEmployee : emp))
         );
         
-        notification.success({
-          message: 'Success',
-          description: `Employee "${data.name}" updated successfully!`,
-          placement: 'topRight',
-        });
+        message.success(`Employee "${data.name}" updated successfully!`);
         
         return true;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Failed to update employee";
         setError(errorMessage);
         
-        notification.error({
-          message: 'Error',
-          description: errorMessage,
-          placement: 'topRight',
-        });
+        message.error(errorMessage);
         
         return false;
       } finally {
@@ -126,20 +106,12 @@ export const useEmployees = (): UseEmployeesReturn => {
         )
       );
       
-      notification.success({
-        message: 'Success',
-        description: 'Employee archived successfully!',
-        placement: 'topRight',
-      });
+      message.success('Employee archived successfully!');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to archive employee";
       setError(errorMessage);
       
-      notification.error({
-        message: 'Error',
-        description: errorMessage,
-        placement: 'topRight',
-      });
+      message.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -157,20 +129,12 @@ export const useEmployees = (): UseEmployeesReturn => {
         )
       );
       
-      notification.success({
-        message: 'Success',
-        description: 'Employee restored successfully!',
-        placement: 'topRight',
-      });
+      message.success('Employee restored successfully!');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to restore employee";
       setError(errorMessage);
       
-      notification.error({
-        message: 'Error',
-        description: errorMessage,
-        placement: 'topRight',
-      });
+      message.error(errorMessage);
     } finally {
       setLoading(false);
     }
