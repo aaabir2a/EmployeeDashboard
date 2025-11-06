@@ -28,9 +28,13 @@ export const useEmployees = (): UseEmployeesReturn => {
       const data = await employeeApi.fetchEmployees();
       setEmployees(data);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to fetch employees";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to fetch employees";
       setError(errorMessage);
-      message.error(errorMessage);
+      message.error({
+        content: errorMessage,
+        duration: 3,
+      });
     } finally {
       setLoading(false);
     }
@@ -48,16 +52,27 @@ export const useEmployees = (): UseEmployeesReturn => {
       try {
         const newEmployee = await employeeApi.createEmployee(data);
         setEmployees((prev) => [...prev, newEmployee]);
-        
-        message.success(`Employee "${data.name}" added successfully!`);
-        
+
+        // Use message.success with explicit config
+        message.success({
+          content: `Employee "${data.name}" added successfully!`,
+          duration: 3,
+          style: {
+            marginTop: "80px",
+          },
+        });
+
         return true;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to create employee";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to create employee";
         setError(errorMessage);
-        
-        message.error(errorMessage);
-        
+
+        message.error({
+          content: errorMessage,
+          duration: 3,
+        });
+
         return false;
       } finally {
         setLoading(false);
@@ -76,16 +91,26 @@ export const useEmployees = (): UseEmployeesReturn => {
         setEmployees((prev) =>
           prev.map((emp) => (emp.id === id ? updatedEmployee : emp))
         );
-        
-        message.success(`Employee "${data.name}" updated successfully!`);
-        
+
+        message.success({
+          content: `Employee "${data.name}" updated successfully!`,
+          duration: 3,
+          style: {
+            marginTop: "80px",
+          },
+        });
+
         return true;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to update employee";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to update employee";
         setError(errorMessage);
-        
-        message.error(errorMessage);
-        
+
+        message.error({
+          content: errorMessage,
+          duration: 3,
+        });
+
         return false;
       } finally {
         setLoading(false);
@@ -101,17 +126,25 @@ export const useEmployees = (): UseEmployeesReturn => {
     try {
       await employeeApi.archiveEmployee(id);
       setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === id ? { ...emp, isArchived: true } : emp
-        )
+        prev.map((emp) => (emp.id === id ? { ...emp, isArchived: true } : emp))
       );
-      
-      message.success('Employee archived successfully!');
+
+      message.success({
+        content: "Employee archived successfully!",
+        duration: 3,
+        style: {
+          marginTop: "80px",
+        },
+      });
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to archive employee";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to archive employee";
       setError(errorMessage);
-      
-      message.error(errorMessage);
+
+      message.error({
+        content: errorMessage,
+        duration: 3,
+      });
     } finally {
       setLoading(false);
     }
@@ -124,17 +157,25 @@ export const useEmployees = (): UseEmployeesReturn => {
     try {
       await employeeApi.restoreEmployee(id);
       setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === id ? { ...emp, isArchived: false } : emp
-        )
+        prev.map((emp) => (emp.id === id ? { ...emp, isArchived: false } : emp))
       );
-      
-      message.success('Employee restored successfully!');
+
+      message.success({
+        content: "Employee restored successfully!",
+        duration: 3,
+        style: {
+          marginTop: "80px",
+        },
+      });
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to restore employee";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to restore employee";
       setError(errorMessage);
-      
-      message.error(errorMessage);
+
+      message.error({
+        content: errorMessage,
+        duration: 3,
+      });
     } finally {
       setLoading(false);
     }

@@ -1,13 +1,13 @@
 // components/EmployeeTable.tsx
 import React from "react";
 import { Table, Tag, Button, Space, Progress, Tooltip, Popconfirm } from "antd";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  UndoOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, UndoOutlined } from "@ant-design/icons";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
-import type { Employee, PaginationState, SortState } from "../types/employee.types";
+import type {
+  Employee,
+  PaginationState,
+  SortState,
+} from "../types/employee.types";
 import { STATUS_COLORS, PAGE_SIZE_OPTIONS } from "../utils/constants";
 import dayjs from "dayjs";
 
@@ -91,7 +91,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
       dataIndex: "performanceScore",
       key: "performanceScore",
       sorter: true,
-      sortOrder: sortState.field === "performanceScore" ? sortState.order : null,
+      sortOrder:
+        sortState.field === "performanceScore" ? sortState.order : null,
       width: 180,
       render: (score: number) => (
         <Tooltip title={`Score: ${score}/100`}>
@@ -165,14 +166,12 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     _filters: any,
     sorter: any
   ) => {
-    // Handle pagination - Check if pageSize changed
-    if (paginationConfig.pageSize !== pagination.pageSize) {
-      // Page size changed - reset to page 1
-      onPaginationChange(1, paginationConfig.pageSize!);
-    } else if (paginationConfig.current !== pagination.current) {
-      // Page changed - keep the same page size
-      onPaginationChange(paginationConfig.current!, pagination.pageSize);
-    }
+    // Handle pagination
+    const newPage = paginationConfig.current || 1;
+    const newPageSize = paginationConfig.pageSize || pagination.pageSize;
+
+    // Call the handler with both values
+    onPaginationChange(newPage, newPageSize);
 
     // Handle sorting
     if (sorter && !Array.isArray(sorter)) {
@@ -195,8 +194,9 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
         pageSize: pagination.pageSize,
         total: pagination.total,
         showSizeChanger: true,
-        showQuickJumper: false, // REMOVED: No "Go to Page"
-        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} employees`,
+        showQuickJumper: false,
+        showTotal: (total, range) =>
+          `${range[0]}-${range[1]} of ${total} employees`,
         pageSizeOptions: PAGE_SIZE_OPTIONS,
       }}
       onChange={handleTableChange}

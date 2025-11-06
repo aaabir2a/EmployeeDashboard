@@ -20,7 +20,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
     return (
       <Empty
         image={Empty.PRESENTED_IMAGE_SIMPLE}
-        imageStyle={{ height: 120 }}
+        styles={{ image: { height: 120 } }}
         description={
           <Space direction="vertical" size="small">
             <Text strong style={{ fontSize: 16 }}>
@@ -48,14 +48,15 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <Empty
       image={Empty.PRESENTED_IMAGE_SIMPLE}
-      imageStyle={{ height: 120 }}
+      styles={{ image: { height: 120 } }}
       description={
         <Space direction="vertical" size="small">
           <Text strong style={{ fontSize: 16 }}>
             No Results Found
           </Text>
           <Text type="secondary">
-            No employees match your current filters. Try adjusting your search criteria.
+            No employees match your current filters. Try adjusting your search
+            criteria.
           </Text>
         </Space>
       }

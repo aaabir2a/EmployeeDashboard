@@ -1,9 +1,12 @@
 // components/EmployeeHeader.tsx
 import React from "react";
 import { Typography, Button, Space, Switch, Tooltip } from "antd";
-import { PlusOutlined, TableOutlined, AppstoreOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  TableOutlined,
+  AppstoreOutlined,
+} from "@ant-design/icons";
 import type { ViewMode } from "../types/employee.types";
-
 
 const { Title } = Typography;
 
@@ -41,7 +44,7 @@ const EmployeeHeader: React.FC<EmployeeHeaderProps> = ({
       <Space size="middle" wrap>
         <Space>
           <span style={{ color: "#666" }}>View:</span>
-          <Button.Group>
+          <Space.Compact>
             <Tooltip title="Table View">
               <Button
                 type={viewMode === "table" ? "primary" : "default"}
@@ -56,7 +59,7 @@ const EmployeeHeader: React.FC<EmployeeHeaderProps> = ({
                 onClick={() => onViewModeChange("card")}
               />
             </Tooltip>
-          </Button.Group>
+          </Space.Compact>
         </Space>
 
         <Space>
