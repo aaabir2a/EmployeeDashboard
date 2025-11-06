@@ -1,6 +1,6 @@
 // hooks/useEmployees.ts
 import { useState, useEffect, useCallback } from "react";
-import { message } from "antd";
+import { notification } from "antd"; // Changed from message to notification
 import type { Employee, EmployeeFormData } from "../types/employee.types";
 import * as employeeApi from "../services/employeeApi";
 
@@ -20,7 +20,6 @@ export const useEmployees = (): UseEmployeesReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch all employees
   const fetchEmployees = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -31,18 +30,20 @@ export const useEmployees = (): UseEmployeesReturn => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to fetch employees";
       setError(errorMessage);
-      message.error(errorMessage);
+      notification.error({
+        message: 'Error',
+        description: errorMessage,
+        placement: 'topRight',
+      });
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Initial fetch
   useEffect(() => {
     fetchEmployees();
   }, [fetchEmployees]);
 
-  // Create employee
   const createEmployee = useCallback(
     async (data: EmployeeFormData): Promise<boolean> => {
       setLoading(true);
@@ -52,10 +53,10 @@ export const useEmployees = (): UseEmployeesReturn => {
         const newEmployee = await employeeApi.createEmployee(data);
         setEmployees((prev) => [...prev, newEmployee]);
         
-        // Show success message
-        message.success({
-          content: `Employee "${data.name}" added successfully!`,
-          duration: 3,
+        notification.success({
+          message: 'Success',
+          description: `Employee "${data.name}" added successfully!`,
+          placement: 'topRight',
         });
         
         return true;
@@ -63,10 +64,10 @@ export const useEmployees = (): UseEmployeesReturn => {
         const errorMessage = err instanceof Error ? err.message : "Failed to create employee";
         setError(errorMessage);
         
-        // Show error message
-        message.error({
-          content: errorMessage,
-          duration: 4,
+        notification.error({
+          message: 'Error',
+          description: errorMessage,
+          placement: 'topRight',
         });
         
         return false;
@@ -77,7 +78,6 @@ export const useEmployees = (): UseEmployeesReturn => {
     []
   );
 
-  // Update employee
   const updateEmployee = useCallback(
     async (id: string, data: EmployeeFormData): Promise<boolean> => {
       setLoading(true);
@@ -89,10 +89,10 @@ export const useEmployees = (): UseEmployeesReturn => {
           prev.map((emp) => (emp.id === id ? updatedEmployee : emp))
         );
         
-        // Show success message
-        message.success({
-          content: `Employee "${data.name}" updated successfully!`,
-          duration: 3,
+        notification.success({
+          message: 'Success',
+          description: `Employee "${data.name}" updated successfully!`,
+          placement: 'topRight',
         });
         
         return true;
@@ -100,10 +100,10 @@ export const useEmployees = (): UseEmployeesReturn => {
         const errorMessage = err instanceof Error ? err.message : "Failed to update employee";
         setError(errorMessage);
         
-        // Show error message
-        message.error({
-          content: errorMessage,
-          duration: 4,
+        notification.error({
+          message: 'Error',
+          description: errorMessage,
+          placement: 'topRight',
         });
         
         return false;
@@ -114,7 +114,6 @@ export const useEmployees = (): UseEmployeesReturn => {
     []
   );
 
-  // Archive employee (soft delete)
   const archiveEmployee = useCallback(async (id: string): Promise<void> => {
     setLoading(true);
     setError(null);
@@ -127,26 +126,25 @@ export const useEmployees = (): UseEmployeesReturn => {
         )
       );
       
-      // Show success message
-      message.success({
-        content: "Employee archived successfully!",
-        duration: 3,
+      notification.success({
+        message: 'Success',
+        description: 'Employee archived successfully!',
+        placement: 'topRight',
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to archive employee";
       setError(errorMessage);
       
-      // Show error message
-      message.error({
-        content: errorMessage,
-        duration: 4,
+      notification.error({
+        message: 'Error',
+        description: errorMessage,
+        placement: 'topRight',
       });
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Restore archived employee
   const restoreEmployee = useCallback(async (id: string): Promise<void> => {
     setLoading(true);
     setError(null);
@@ -159,26 +157,25 @@ export const useEmployees = (): UseEmployeesReturn => {
         )
       );
       
-      // Show success message
-      message.success({
-        content: "Employee restored successfully!",
-        duration: 3,
+      notification.success({
+        message: 'Success',
+        description: 'Employee restored successfully!',
+        placement: 'topRight',
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to restore employee";
       setError(errorMessage);
       
-      // Show error message
-      message.error({
-        content: errorMessage,
-        duration: 4,
+      notification.error({
+        message: 'Error',
+        description: errorMessage,
+        placement: 'topRight',
       });
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Refresh employees (manual reload)
   const refreshEmployees = useCallback(async () => {
     await fetchEmployees();
   }, [fetchEmployees]);
