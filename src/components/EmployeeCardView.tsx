@@ -1,4 +1,3 @@
-// components/EmployeeCardView.tsx
 import React from "react";
 import {
   Card,
@@ -104,8 +103,11 @@ const EmployeeCardView: React.FC<EmployeeCardViewProps> = ({
                 ),
               ]}
             >
-              <Space direction="vertical" style={{ width: "100%" }} size="middle">
-                {/* Name & Status */}
+              <Space
+                direction="vertical"
+                style={{ width: "100%" }}
+                size="middle"
+              >
                 <div
                   style={{
                     display: "flex",
@@ -121,19 +123,16 @@ const EmployeeCardView: React.FC<EmployeeCardViewProps> = ({
                   </Tag>
                 </div>
 
-                {/* Role */}
                 <Space>
                   <UserOutlined style={{ color: "#888" }} />
                   <Text type="secondary">{employee.role}</Text>
                 </Space>
 
-                {/* Department */}
                 <Space>
                   <TeamOutlined style={{ color: "#888" }} />
                   <Text>{employee.department}</Text>
                 </Space>
 
-                {/* Joining Date */}
                 <Space>
                   <CalendarOutlined style={{ color: "#888" }} />
                   <Text type="secondary">
@@ -141,7 +140,6 @@ const EmployeeCardView: React.FC<EmployeeCardViewProps> = ({
                   </Text>
                 </Space>
 
-                {/* Performance Score */}
                 <div>
                   <Text type="secondary" style={{ fontSize: 12 }}>
                     Performance Score
@@ -154,7 +152,6 @@ const EmployeeCardView: React.FC<EmployeeCardViewProps> = ({
                   />
                 </div>
 
-                {/* Archived Tag */}
                 {employee.isArchived && showArchived && (
                   <Tag color="default">Archived</Tag>
                 )}
@@ -164,7 +161,6 @@ const EmployeeCardView: React.FC<EmployeeCardViewProps> = ({
         ))}
       </Row>
 
-      {/* Pagination */}
       <div style={{ marginTop: 24, textAlign: "right" }}>
         <Pagination
           current={pagination.current}
@@ -172,7 +168,9 @@ const EmployeeCardView: React.FC<EmployeeCardViewProps> = ({
           total={pagination.total}
           onChange={onPaginationChange}
           showSizeChanger
-          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} employees`}
+          showTotal={(total, range) =>
+            `${range[0]}-${range[1]} of ${total} employees`
+          }
           pageSizeOptions={PAGE_SIZE_OPTIONS}
         />
       </div>

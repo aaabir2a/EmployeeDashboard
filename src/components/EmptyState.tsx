@@ -1,4 +1,3 @@
-// components/EmptyState.tsx
 import React from "react";
 import { Empty, Button, Space, Typography } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";

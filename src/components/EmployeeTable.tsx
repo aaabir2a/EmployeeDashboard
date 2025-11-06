@@ -1,4 +1,3 @@
-// components/EmployeeTable.tsx
 import React from "react";
 import { Table, Tag, Button, Space, Progress, Tooltip, Popconfirm } from "antd";
 import { EditOutlined, DeleteOutlined, UndoOutlined } from "@ant-design/icons";
@@ -51,7 +50,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
       sorter: true,
       sortOrder: sortState.field === "name" ? sortState.order : null,
       width: 200,
-      fixed: "left",
     },
     {
       title: "Department",
@@ -109,7 +107,6 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
       title: "Actions",
       key: "actions",
       width: 150,
-      fixed: "right",
       render: (_, record) => (
         <Space>
           <Tooltip title="Edit">
@@ -166,14 +163,11 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     _filters: any,
     sorter: any
   ) => {
-    // Handle pagination
     const newPage = paginationConfig.current || 1;
     const newPageSize = paginationConfig.pageSize || pagination.pageSize;
 
-    // Call the handler with both values
     onPaginationChange(newPage, newPageSize);
 
-    // Handle sorting
     if (sorter && !Array.isArray(sorter)) {
       if (sorter.field && sorter.order) {
         onSortChange(sorter.field as string, sorter.order);
@@ -201,7 +195,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
       }}
       onChange={handleTableChange}
       bordered
-      scroll={{ x: 1200 }}
+      scroll={{ x: 1150 }}
     />
   );
 };

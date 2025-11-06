@@ -1,4 +1,3 @@
-// components/EmployeeHeader.tsx
 import React from "react";
 import { Typography, Button, Space, Switch, Tooltip } from "antd";
 import {

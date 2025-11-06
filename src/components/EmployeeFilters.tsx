@@ -1,4 +1,3 @@
-// components/EmployeeFilters.tsx
 import React from "react";
 import { Space, Input, Select, Button, DatePicker } from "antd";
 import {
@@ -41,7 +40,10 @@ const EmployeeFilters: React.FC<EmployeeFiltersProps> = ({
   ) => {
     if (dates && dates[0] && dates[1]) {
       onFilterChange({
-        dateRange: [dates[0].format("YYYY-MM-DD"), dates[1].format("YYYY-MM-DD")],
+        dateRange: [
+          dates[0].format("YYYY-MM-DD"),
+          dates[1].format("YYYY-MM-DD"),
+        ],
       });
     } else {
       onFilterChange({ dateRange: null });

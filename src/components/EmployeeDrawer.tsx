@@ -1,4 +1,3 @@
-// components/EmployeeDrawer.tsx
 import React, { useEffect, useState } from "react";
 import {
   Drawer,
@@ -13,7 +12,11 @@ import {
 } from "antd";
 import { SaveOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import type { Employee, EmployeeFormData } from "../types/employee.types";
-import { DEPARTMENTS, STATUS_OPTIONS, VALIDATION_MESSAGES } from "../utils/constants";
+import {
+  DEPARTMENTS,
+  STATUS_OPTIONS,
+  VALIDATION_MESSAGES,
+} from "../utils/constants";
 import dayjs from "dayjs";
 
 const { Option } = Select;
@@ -38,7 +41,6 @@ const EmployeeDrawer: React.FC<EmployeeDrawerProps> = ({
 
   const isEditMode = !!employee;
 
-  // Pre-fill form when editing
   useEffect(() => {
     if (open && employee) {
       form.setFieldsValue({
@@ -93,7 +95,7 @@ const EmployeeDrawer: React.FC<EmployeeDrawerProps> = ({
       footer={
         <Space style={{ float: "right" }}>
           <Button onClick={handleClose}>Cancel</Button>
-          
+
           {isEditMode && (
             <Button
               type="default"
@@ -176,7 +178,9 @@ const EmployeeDrawer: React.FC<EmployeeDrawerProps> = ({
             style={{ width: "100%" }}
             size="large"
             format="YYYY-MM-DD"
-            disabledDate={(current) => current && current > dayjs().endOf("day")}
+            disabledDate={(current) =>
+              current && current > dayjs().endOf("day")
+            }
           />
         </Form.Item>
 

@@ -1,6 +1,5 @@
 "use client";
 
-// pages/EmployeeDashboard.tsx
 import type React from "react";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { Layout, Spin, Alert } from "antd";
@@ -27,7 +26,6 @@ import { DEFAULT_PAGE_SIZE, STORAGE_KEYS } from "../utils/constants";
 const { Content } = Layout;
 
 const EmployeeDashboard: React.FC = () => {
-  // Core data
   const {
     employees: allEmployees,
     loading: apiLoading,
@@ -38,7 +36,6 @@ const EmployeeDashboard: React.FC = () => {
     restoreEmployee,
   } = useEmployees();
 
-  // UI State
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null
@@ -48,7 +45,6 @@ const EmployeeDashboard: React.FC = () => {
     "table"
   );
 
-  // Filter State
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     department: null,
@@ -57,16 +53,13 @@ const EmployeeDashboard: React.FC = () => {
     showArchived: false,
   });
 
-  // Debounced search for performance
   const debouncedSearch = useDebounce(filters.search, 500);
 
-  // Sort State (persisted)
   const [sortState, setSortState] = useLocalStorage<SortState>(
     STORAGE_KEYS.SORT,
     { field: "", order: null }
   );
 
-  // Pagination State (persisted)
   const [pagination, setPagination] = useLocalStorage<PaginationState>(
     STORAGE_KEYS.PAGINATION,
     {
@@ -76,7 +69,6 @@ const EmployeeDashboard: React.FC = () => {
     }
   );
 
-  // Apply filters and sorting
   const filteredAndSortedEmployees = useMemo(() => {
     const debouncedFilters = { ...filters, search: debouncedSearch };
     const filtered = filterEmployees(allEmployees, debouncedFilters);
@@ -84,17 +76,14 @@ const EmployeeDashboard: React.FC = () => {
     return sorted;
   }, [allEmployees, debouncedSearch, filters, sortState]);
 
-  // Paginated employees for current view
   const paginatedEmployees = useMemo(() => {
     const startIndex = (pagination.current - 1) * pagination.pageSize;
     const endIndex = startIndex + pagination.pageSize;
     return filteredAndSortedEmployees.slice(startIndex, endIndex);
   }, [filteredAndSortedEmployees, pagination]);
 
-  // Use ref to track if we've already updated to prevent loops
   const isUpdatingRef = useRef(false);
 
-  // Update pagination total when filtered data changes
   useEffect(() => {
     if (isUpdatingRef.current) return;
 
@@ -102,7 +91,6 @@ const EmployeeDashboard: React.FC = () => {
     const currentPageSize = pagination.pageSize;
     const maxPage = Math.ceil(currentLength / currentPageSize) || 1;
 
-    // Check if we need to update
     const needsUpdate =
       pagination.total !== currentLength || pagination.current > maxPage;
 
@@ -115,17 +103,15 @@ const EmployeeDashboard: React.FC = () => {
         current: prev.current > maxPage ? 1 : prev.current,
       }));
 
-      // Reset the flag after state update
       setTimeout(() => {
         isUpdatingRef.current = false;
       }, 0);
     }
   }, [filteredAndSortedEmployees.length, pagination, setPagination]);
 
-  // Handlers
   const handleFilterChange = (newFilters: Partial<FilterState>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
-    // Reset to page 1 when filters change
+
     setPagination((prev) => ({ ...prev, current: 1 }));
   };
 
@@ -135,7 +121,7 @@ const EmployeeDashboard: React.FC = () => {
       department: null,
       status: null,
       dateRange: null,
-      showArchived: filters.showArchived, // Preserve archived toggle
+      showArchived: filters.showArchived,
     });
     setPagination((prev) => ({ ...prev, current: 1 }));
   };
@@ -154,11 +140,10 @@ const EmployeeDashboard: React.FC = () => {
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPagination((prev) => {
-      // If pageSize changed, reset to page 1
       if (pageSize !== prev.pageSize) {
         return { ...prev, pageSize, current: 1 };
       }
-      // Otherwise just update the page
+
       return { ...prev, current: page };
     });
   };
@@ -194,7 +179,6 @@ const EmployeeDashboard: React.FC = () => {
     await restoreEmployee(id);
   };
 
-  // Determine what to show
   const showEmptyState =
     !apiLoading && allEmployees.length === 0 && !filters.showArchived;
   const showNoResults =
