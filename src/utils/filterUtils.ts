@@ -54,22 +54,42 @@ export const filterEmployees = (
 };
 
 /**
- * Sort employees based on field and order
- * @param employees - Array of employees to sort
- * @param field - Field name to sort by
- * @param order - Sort order ('ascend' | 'descend' | null)
+ * Sort employees - supports both call signatures for compatibility
  */
-export const sortEmployees = (
+export function sortEmployees(
+  employees: Employee[],
+  sortState: SortState
+): Employee[];
+export function sortEmployees(
   employees: Employee[],
   field: string,
   order: "ascend" | "descend" | null
-): Employee[] => {
-  if (!field || !order) {
+): Employee[];
+export function sortEmployees(
+  employees: Employee[],
+  fieldOrSortState: string | SortState,
+  order?: "ascend" | "descend" | null
+): Employee[] {
+  // Handle both call signatures
+  let field: string;
+  let sortOrder: "ascend" | "descend" | null;
+
+  if (typeof fieldOrSortState === "string") {
+    // Called with separate parameters
+    field = fieldOrSortState;
+    sortOrder = order ?? null;
+  } else {
+    // Called with SortState object
+    field = fieldOrSortState.field;
+    sortOrder = fieldOrSortState.order;
+  }
+
+  if (!field || !sortOrder) {
     return employees;
   }
 
   const sorted = [...employees];
-  const isAscending = order === "ascend";
+  const isAscending = sortOrder === "ascend";
 
   sorted.sort((a, b) => {
     let aValue: any = a[field as keyof Employee];
@@ -94,4 +114,4 @@ export const sortEmployees = (
   });
 
   return sorted;
-};
+}
